@@ -1,0 +1,29 @@
+{
+  "name": "hannesvdvreken/guzzle-debugbar",
+  "description": "A Guzzle plugin that listens to events and logs them to debugbar's timeline",
+  "keywords": ["Guzzle", "http", "logging", "debugbar"],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hannes Van De Vreken",
+      "email": "vandevreken.hannes@gmail.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "~4|~5",
+    "maximebf/debugbar": "~1"
+  },
+  "require-dev": {
+    "illuminate/support": "~4|~5"
+  },
+  "autoload": {
+    "psr-4": {
+      "GuzzleHttp\\Subscriber\\Log\\": "src/"
+    }
+  },
+  "scripts": {
+    "test": "echo 'No tests yet. Help me by writing some!';"
+  },
+  "minimum-stability": "dev"
+}
