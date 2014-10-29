@@ -25,7 +25,7 @@ Every request is now logged to the timeline, and errors are logged to the 'Messa
 
 ## Support
 
-### Laravel
+### Laravel 4+
 
 First make sure you have my friend Barry's [laravel-debugbar](https://github.com/barryvdh/laravel-debugbar) configured.
 Then include the `GuzzleHttp\Subscriber\Log\Support\Laravel\ServiceProvider` from this package to the app's `providers`
