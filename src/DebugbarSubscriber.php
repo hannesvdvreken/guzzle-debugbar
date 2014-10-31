@@ -14,16 +14,23 @@ use Psr\Log\LoggerInterface;
 class DebugbarSubscriber implements SubscriberInterface
 {
     /**
-     * @var DebugBar
+     * @var TimeDataCollector
      */
-    private $debugBar;
+    private $timeline;
 
     /**
-     * @param DebugBar $debugBar
+     * @var ExceptionsCollector
      */
-    public function __construct(DebugBar $debugBar)
+    private $exceptions;
+
+    /**
+     * @param TimeDataCollector   $timeline
+     * @param ExceptionsCollector $exceptions
+     */
+    public function __construct(TimeDataCollector $timeline, ExceptionsCollector $exceptions)
     {
-        $this->debugBar = $debugBar;
+        $this->timeline   = $timeline;
+        $this->exceptions = $exceptions;
     }
 
     /**
@@ -43,17 +50,14 @@ class DebugbarSubscriber implements SubscriberInterface
      */
     public function onBefore(BeforeEvent $event)
     {
-        // Get request.
-        $request = $event->getRequest();
+        // Make up an identifier.
+        $identifier = $this->createTimelineID($event->getRequest());
 
-        // Get unique identifier.
-        $id = $this->createRequestID($request);
-
-        // Start the event.
-        $message = sprintf('Performing a %s request to %s.', $request->getMethod(), $request->getHeader('Host'));
+        // Construct a timeline message
+        $message = $this->createTimelineMessage($event->getRequest());
 
         // Start time tracking.
-        $this->getTimeline()->startMeasure("guzzle.request.$id", $message);
+        $this->timeline->startMeasure($identifier, $message);
     }
 
     /**
@@ -61,11 +65,8 @@ class DebugbarSubscriber implements SubscriberInterface
      */
     public function onComplete(CompleteEvent $event)
     {
-        // Get the guzzle request object.
-        $request = $event->getRequest();
-
         // Stop measurement.
-        $this->stopMeasure($request);
+        $this->stopMeasure($event->getRequest());
     }
 
     /**
@@ -73,25 +74,20 @@ class DebugbarSubscriber implements SubscriberInterface
      */
     public function onError(ErrorEvent $event)
     {
-        if ($response = $event->getResponse()) {
-            // Get request.
-            $request = $event->getRequest();
+        // Stop tracking the request.
+        $this->stopMeasure($event->getRequest());
 
-            // Stop tracking for this request.
-            $this->stopMeasure($request);
+        // And log the exception.
+        $this->exceptions->addException($event->getException());
+    }
 
-            // Build error message.
-            $message = sprintf('%s %s returned %s', $request->getMethod(), $request->getUrl(), $response->getStatusCode());
-
-            // Log the message about the request error.
-            $this->getLogger()->error($message, compact('request', 'response'));
-        } else {
-            // Get the exception
-            $exception = $event->getException();
-
-            // And log the exception.
-            $this->getExceptionsCollector()->addException($exception);
-        }
+    /**
+     * @param $request
+     */
+    private function stopMeasure($request)
+    {
+        // Stop time tracking.
+        $this->timeline->stopMeasure($this->createTimelineID($request));
     }
 
     /**
@@ -105,38 +101,22 @@ class DebugbarSubscriber implements SubscriberInterface
     }
 
     /**
-     * @return TimeDataCollector
+     * @param RequestInterface $request
+     *
+     * @return string
      */
-    private function getTimeline()
+    private function createTimelineID(RequestInterface $request)
     {
-        return $this->debugBar->getCollector('time');
+        return 'guzzle.request.' . $this->createRequestID($request);
     }
 
     /**
-     * @return ExceptionsCollector
+     * @param RequestInterface $request
+     *
+     * @return string
      */
-    private function getExceptionsCollector()
+    private function createTimelineMessage(RequestInterface $request)
     {
-        return $this->debugBar->getCollector('exceptions');
-    }
-
-    /**
-     * @return LoggerInterface
-     */
-    private function getLogger()
-    {
-        return $this->debugBar->getCollector('messages');
-    }
-
-    /**
-     * @param $request
-     */
-    private function stopMeasure($request)
-    {
-        // Get a unique id.
-        $id = $this->createRequestID($request);
-
-        // Stop time tracking.
-        $this->getTimeline()->stopMeasure("guzzle.request.$id");
+        return sprintf('Performing a %s request to %s.', $request->getMethod(), $request->getHeader('Host'));
     }
 }

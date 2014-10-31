@@ -1,9 +1,14 @@
 <?php
 namespace GuzzleHttp\Subscriber\Log\Support;
 
+use DebugBar\DataCollector\ExceptionsCollector;
+use DebugBar\DebugBar;
 use GuzzleHttp\Client;
+use GuzzleHttp\Subscriber\Log\LogSubscriber;
 use GuzzleHttp\Subscriber\Log\DebugbarSubscriber;
+use Psr\Log\LoggerInterface;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use DebugBar\DataCollector\TimeDataCollector;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -25,14 +30,21 @@ class ServiceProvider extends BaseServiceProvider
             // Create new client.
             $client = new Client;
 
-            // Get debugbar.
+            /** @var DebugBar $debugBar */
             $debugBar = $this->app->make('debugbar');
 
-            // Create new log subscriber for Guzzle.
-            $subscriber = new DebugbarSubscriber($debugBar);
+            /** @var LoggerInterface $logger */
+            $logger = $debugBar->getCollector('messages');
 
-            // Attach event subscriber.
-            $client->getEmitter()->attach($subscriber);
+            /** @var TimeDataCollector $timeline */
+            $timeline = $debugBar->getCollector('time');
+
+            /** @var ExceptionsCollector $exceptions */
+            $exceptions = $debugBar->getCollector('exceptions');
+
+            // Attach event subscribers.
+            $client->getEmitter()->attach(new LogSubscriber($logger));
+            $client->getEmitter()->attach(new DebugbarSubscriber($timeline, $exceptions));
 
             // Return configured client.
             return $client;
