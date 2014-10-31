@@ -10,18 +10,39 @@ Guzzle Subscriber for logging to debugbar's timeline and logs.
 Just four lines of code are needed to log your requests to debugbar's timeline.
 
 ```php
-$debugbar = new StandardDebugBar();
+$debugBar = new StandardDebugBar();
 
-$subscriber = new GuzzleHttp\Subscriber\Log\DebugbarSubscriber($debugbar);
+// Get data collectors.
+$timeline = $debugBar->getCollector('time');
+$exceptions = $debugBar->getCollector('exceptions');
 
+// Create the subscriber.
+$subscriber = new GuzzleHttp\Subscriber\Log\DebugbarSubscriber($timeline, $exceptions);
+
+// Attach it to the Guzzle client's event emitter.
 $client = new GuzzleHttp\Client;
-
 $client->getEmitter()->attach($subscriber);
 ```
 
 Now `$client` is ready to make requests.
 
-Every request is now logged to the timeline, and errors are logged to the 'Messages' tab.
+Every request is now logged to the timeline, and thrown exceptions are logged to the 'Messages' tab.
+
+### Recommended: use Guzzle's LogSubscriber
+
+```php
+$debugBar = new StandardDebugBar();
+
+// PSR-3 logger:
+$logger = $debugBar->getCollector('messages');
+
+// Create a new LogSubscriber.
+$subscriber = new GuzzleHttp\Subscriber\Log\LogSubscriber($logger);
+
+// Attach it to the Guzzle client's event emitter.
+$client = new GuzzleHttp\Client;
+$client->getEmitter()->attach($subscriber);
+```
 
 ## Support
 
