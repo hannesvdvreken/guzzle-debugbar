@@ -26,9 +26,9 @@ class ServiceProvider extends BaseServiceProvider
     private function registerGuzzleSubscriber()
     {
         // Register a log subscriber with every Guzzle client.
-        $this->app->bind('GuzzleHttp\Client', function () {
+        $this->app->bind('GuzzleHttp\Client', function ($app, $params) {
             // Create new client.
-            $client = new Client;
+            $client = new Client(array_shift($params) ?: []);
 
             /** @var DebugBar $debugBar */
             $debugBar = $this->app->make('debugbar');
