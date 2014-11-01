@@ -52,8 +52,8 @@ First make sure you have my friend Barry's [laravel-debugbar](https://github.com
 Then include the `GuzzleHttp\Subscriber\Log\Support\Laravel\ServiceProvider` from this package to the app's `providers`
 array.
 
-Make sure to create every Guzzle Client via injection or via `App::make`. Pass on the config array for the Guzzle Client
-if needed.
+Make sure to create every Guzzle Client via injection or via `App::make`. Pass on the config array the Guzzle Client's
+constructor if needed.
 
 ```php
 public function __construct(\GuzzleHttp\Client $client) {
