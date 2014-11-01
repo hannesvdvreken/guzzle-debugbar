@@ -52,6 +52,14 @@ First make sure you have my friend Barry's [laravel-debugbar](https://github.com
 Then include the `GuzzleHttp\Subscriber\Log\Support\Laravel\ServiceProvider` from this package to the app's `providers`
 array.
 
+`'time' is not a registered collector`
+
+`'exceptions' is not a registered collector`
+
+If you see one of these error messages, it means you disabled the `time` collector and/or the `exceptions` collector
+in your `packages/barryvdh/laravel-debugbar/config.php`. By default these are enabled. This package depends on it,
+so please enable them both.
+
 ## Contributing
 
 Please be nice in issues/pull request, and stick to PSR-2. Everything will be just fine.
