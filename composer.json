@@ -12,6 +12,8 @@
   ],
   "require": {
     "guzzlehttp/guzzle": "~4|~5",
+    "guzzlehttp/guzzle": "~4|~5",
+    "guzzlehttp/log-subscriber": "~1.0",
     "maximebf/debugbar": "~1"
   },
   "require-dev": {
