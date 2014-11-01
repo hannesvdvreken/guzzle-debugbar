@@ -52,6 +52,21 @@ First make sure you have my friend Barry's [laravel-debugbar](https://github.com
 Then include the `GuzzleHttp\Subscriber\Log\Support\Laravel\ServiceProvider` from this package to the app's `providers`
 array.
 
+Make sure to create every Guzzle Client via injection or via `App::make`. Pass on the config array for the Guzzle Client
+if needed.
+
+```php
+public function __construct(\GuzzleHttp\Client $client) {
+    $this->client = $client;
+    $this->client->get('http://example.org/abolute/url');
+}
+
+public function __construct(Illuminate\Foundation\Application $app) {
+    $this->client = $app->make('\GuzzleHttp\Client', [['base_url' => 'https://api.github.com']]);
+    $this->client->get('/users/hannesvdvreken')->json();
+}
+```
+
 `'time' is not a registered collector`
 
 `'exceptions' is not a registered collector`
