@@ -48,9 +48,21 @@ $client->getEmitter()->attach($subscriber);
 
 ### Laravel 4+
 
-First make sure you have my friend Barry's [laravel-debugbar](https://github.com/barryvdh/laravel-debugbar) configured.
-Then include the `GuzzleHttp\Subscriber\Log\Support\Laravel\ServiceProvider` from this package to the app's `providers`
-array.
+It is recommended to have my friend Barry's [laravel-debugbar](https://github.com/barryvdh/laravel-debugbar) configured.
+Make sure to include the `GuzzleHttp\Subscriber\Log\Support\Laravel\ServiceProvider` from this package your app's
+`providers` array.
+
+If you just want to use a different implementation of `DebugBar\DebugBar`, create a ServiceProvider that binds an
+implementation with the key `'debugbar'`. For example with this register method:
+
+```php
+public function register()
+{
+    $this->app->singleton('debugbar', function () {
+        return new StandardDebugBar;
+    });
+}
+```
 
 Make sure to create every Guzzle Client via injection or via `App::make`. Pass on the config array the Guzzle Client's
 constructor if needed.
