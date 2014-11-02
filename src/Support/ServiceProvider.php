@@ -2,13 +2,13 @@
 namespace GuzzleHttp\Subscriber\Log\Support;
 
 use DebugBar\DataCollector\ExceptionsCollector;
+use DebugBar\DataCollector\TimeDataCollector;
 use DebugBar\DebugBar;
 use GuzzleHttp\Client;
-use GuzzleHttp\Subscriber\Log\LogSubscriber;
 use GuzzleHttp\Subscriber\Log\DebugbarSubscriber;
-use Psr\Log\LoggerInterface;
+use GuzzleHttp\Subscriber\Log\LogSubscriber;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use DebugBar\DataCollector\TimeDataCollector;
+use Psr\Log\LoggerInterface;
 
 class ServiceProvider extends BaseServiceProvider
 {

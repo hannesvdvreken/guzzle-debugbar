@@ -3,13 +3,11 @@ namespace GuzzleHttp\Subscriber\Log;
 
 use DebugBar\DataCollector\ExceptionsCollector;
 use DebugBar\DataCollector\TimeDataCollector;
-use DebugBar\DebugBar;
 use GuzzleHttp\Event\BeforeEvent;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Event\ErrorEvent;
 use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Message\RequestInterface;
-use Psr\Log\LoggerInterface;
 
 class DebugbarSubscriber implements SubscriberInterface
 {
@@ -82,9 +80,9 @@ class DebugbarSubscriber implements SubscriberInterface
     }
 
     /**
-     * @param $request
+     * @param RequestInterface $request
      */
-    private function stopMeasure($request)
+    private function stopMeasure(RequestInterface $request)
     {
         // Stop time tracking.
         $this->timeline->stopMeasure($this->createTimelineID($request));
