@@ -33,21 +33,40 @@ class ServiceProvider extends BaseServiceProvider
             /** @var DebugBar $debugBar */
             $debugBar = $this->app->make('debugbar');
 
-            /** @var LoggerInterface $logger */
-            $logger = $debugBar->getCollector('messages');
-
-            /** @var TimeDataCollector $timeline */
-            $timeline = $debugBar->getCollector('time');
-
-            /** @var ExceptionsCollector $exceptions */
-            $exceptions = $debugBar->getCollector('exceptions');
-
-            // Attach event subscribers.
-            $client->getEmitter()->attach(new LogSubscriber($logger));
-            $client->getEmitter()->attach(new DebugbarSubscriber($timeline, $exceptions));
+            $this->registerLogSubsriber($client, $debugBar);
+            $this->registerDebugbarSubscriber($client, $debugBar);
 
             // Return configured client.
             return $client;
         });
+    }
+
+    /**
+     * @param Client $client
+     * @param DebugBar $debugBar
+     */
+    private function registerLogSubsriber(Client $client, DebugBar $debugBar)
+    {
+        /** @var LoggerInterface $logger */
+        $logger = $debugBar->getCollector('messages');
+
+        // Attach event subscribers.
+        $client->getEmitter()->attach(new LogSubscriber($logger));
+    }
+
+    /**
+     * @param Client $client
+     * @param DebugBar $debugBar
+     */
+    private function registerDebugbarSubscriber(Client $client, DebugBar $debugBar)
+    {
+        /** @var TimeDataCollector $timeline */
+        $timeline = $debugBar->getCollector('time');
+
+        /** @var ExceptionsCollector $exceptions */
+        $exceptions = $debugBar->getCollector('exceptions');
+
+        // Attach event subscribers.
+        $client->getEmitter()->attach(new DebugbarSubscriber($timeline, $exceptions));
     }
 }
