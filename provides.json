@@ -1,0 +1,5 @@
+{
+  "providers": [
+    "GuzzleHttp\\Subscriber\\Log\\Support\\ServiceProvider"
+  ]
+}
