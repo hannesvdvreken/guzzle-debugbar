@@ -106,6 +106,16 @@ class DebugbarSubscriber implements SubscriberInterface
     }
 
     /**
+     * Set the keys to be used when adding context to a time-line entry.
+     *
+     * @param array $contextKeys
+     */
+    public function setContextKeys(array $contextKeys)
+    {
+        $this->context = $contextKeys;
+    }
+
+    /**
      * Start a measurement for a request.
      *
      * @param RequestInterface $request
