@@ -1,14 +1,16 @@
 <?php
 namespace GuzzleHttp\Subscriber\Log;
 
+use DebugBar\DataCollector\ExceptionsCollector;
 use DebugBar\DataCollector\TimeDataCollector;
+use DebugBar\DebugBarException;
+use Exception;
 use GuzzleHttp\Event\BeforeEvent;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Event\ErrorEvent;
 use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
-use DebugBar\DebugBarException;
 
 class DebugbarSubscriber implements SubscriberInterface
 {
@@ -18,19 +20,43 @@ class DebugbarSubscriber implements SubscriberInterface
     protected $timeline;
 
     /**
-     * @var array
+     * @var ExceptionsCollector
      */
-    protected $startedMeasures = array();
+    protected $exceptions;
 
     /**
-     * @param TimeDataCollector   $timeline
+     * @var array
      */
-    public function __construct(TimeDataCollector $timeline)
+    protected $startedMeasures = [];
+
+    /**
+     * @var array
+     */
+    protected $availableParameters = [
+        'request', 'response', 'method', 'url', 'resource', 'request_version',
+        'response_version', 'host', 'hostname', 'status_code', 'phrase', 'error',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $context = ['host', 'method', 'url', 'status_code', 'phrase', 'request', 'response'];
+
+    /**
+     * Public constructor.
+     *
+     * @param TimeDataCollector   $timeline
+     * @param ExceptionsCollector $exceptions
+     */
+    public function __construct(TimeDataCollector $timeline, ExceptionsCollector $exceptions = null)
     {
         $this->timeline   = $timeline;
+        $this->exceptions = $exceptions;
     }
 
     /**
+     * Returns an array of event names this subscriber wants to listen to.
+     *
      * @return array
      */
     public function getEvents()
@@ -43,6 +69,8 @@ class DebugbarSubscriber implements SubscriberInterface
     }
 
     /**
+     * Method to handle before events.
+     *
      * @param BeforeEvent $event
      */
     public function onBefore(BeforeEvent $event)
@@ -52,6 +80,8 @@ class DebugbarSubscriber implements SubscriberInterface
     }
 
     /**
+     * Method to handle complete events.
+     *
      * @param CompleteEvent $event
      */
     public function onComplete(CompleteEvent $event)
@@ -61,67 +91,82 @@ class DebugbarSubscriber implements SubscriberInterface
     }
 
     /**
+     * Method to handle error events.
+     *
      * @param ErrorEvent $event
      */
     public function onError(ErrorEvent $event)
     {
         // Stop measurement and add exception information.
         $this->stopMeasure($event->getRequest(), $event->getResponse(), $event->getException());
+
+        if ($this->exceptions) {
+            $this->exceptions->addException($event->getException());
+        }
     }
 
     /**
-     * Start a measure
+     * Start a measurement for a request.
      *
-     * @param RequestInterface  $request
+     * @param RequestInterface $request
      */
     protected function startMeasure(RequestInterface $request)
     {
         // Make up an identifier.
         $name = $this->createTimelineID($request);
 
+        // Keep the start time in an array with the unique identifier.
         $this->startedMeasures[$name] = microtime(true);
     }
 
     /**
-     * Stop the measurement
+     * Stop the measurement.
      *
-     * @param RequestInterface $request
+     * @param RequestInterface  $request
      * @param ResponseInterface $response
-     * @param \Exception $error
+     * @param Exception         $error
      *
      * @throws DebugBarException
      */
-    protected function stopMeasure(RequestInterface $request, ResponseInterface $response = null, \Exception $error = null)
-    {
-        $end = microtime(true);
+    protected function stopMeasure(
+        RequestInterface $request,
+        ResponseInterface $response = null,
+        Exception $error = null
+    ) {
         $name = $this->createTimelineID($request);
 
         if (!isset($this->startedMeasures[$name])) {
             throw new DebugBarException("Failed stopping measure '$name' because it hasn't been started");
         }
 
-        $this->timeline->addMeasure(
-            $this->createTimelineMessage($request, $response),
-            $this->startedMeasures[$name],
-            $end,
-            $this->getParameters($request, $response, $error),
-            'guzzle'
-        );
+        $start = $this->startedMeasures[$name];
+        $end = microtime(true);
+        $params = $this->getParameters($request, $response, $error);
+
+        $this->timeline->addMeasure($this->createTimelineMessage($request, $response), $start, $end, $params, 'guzzle');
 
         unset($this->startedMeasures[$name]);
     }
 
-    protected function getParameters(RequestInterface $request, ResponseInterface $response = null, \Exception $error = null)
-    {
-        $params = array();
-        if($error){
-            $params['error'] = $error->getMessage();
-        }
-        $keys = array(
-            'method', 'url', 'host', 'code', 'phrase', 'request', 'response',
-        );
-        foreach($keys as $key){
-            $result = '';
+    /**
+     * Get context fields to add to the time-line entry.
+     *
+     * @param RequestInterface  $request
+     * @param ResponseInterface $response
+     * @param Exception         $error
+     *
+     * @return array
+     */
+    protected function getParameters(
+        RequestInterface $request,
+        ResponseInterface $response = null,
+        Exception $error = null
+    ) {
+        $params = [];
+
+        $keys = array_intersect($this->context, $this->availableParameters);
+
+        foreach ($keys as $key) {
             switch ($key) {
                 case 'request':
                     $result = $request;
@@ -138,13 +183,11 @@ class DebugbarSubscriber implements SubscriberInterface
                 case 'resource':
                     $result = $request->getResource();
                     break;
-                case 'req_version':
+                case 'request_version':
                     $result = $request->getProtocolVersion();
                     break;
-                case 'res_version':
-                    $result = $response
-                        ? $response->getProtocolVersion()
-                        : 'NULL';
+                case 'response_version':
+                    $result = $response ? $response->getProtocolVersion() : 'NULL';
                     break;
                 case 'host':
                     $result = $request->getHost();
@@ -152,24 +195,26 @@ class DebugbarSubscriber implements SubscriberInterface
                 case 'hostname':
                     $result = gethostname();
                     break;
-                case 'code':
-                    $result = $response
-                        ? $response->getStatusCode()
-                        : 'NULL';
+                case 'status_code':
+                    $result = $response ? $response->getStatusCode() : 'NULL';
                     break;
                 case 'phrase':
-                    $result = $response
-                        ? $response->getReasonPhrase()
-                        : 'NULL';
+                    $result = $response ? $response->getReasonPhrase() : 'NULL';
+                    break;
+                case 'error':
+                    $result = $error ? $error->getMessage() : 'NULL';
                     break;
             }
-            $params[$key] = (string) $result;
+
+            $params[$key] = (string) $result ?: '';
         }
 
         return $params;
     }
 
     /**
+     * Create a unique id for the request object.
+     *
      * @param RequestInterface $request
      *
      * @return string
@@ -180,6 +225,8 @@ class DebugbarSubscriber implements SubscriberInterface
     }
 
     /**
+     * Create a unique key for the measurements associative array.
+     *
      * @param RequestInterface $request
      *
      * @return string
@@ -190,6 +237,8 @@ class DebugbarSubscriber implements SubscriberInterface
     }
 
     /**
+     * Build a string for displaying in the time-line containing useful info on the request.
+     *
      * @param RequestInterface  $request
      * @param ResponseInterface $response
      *
