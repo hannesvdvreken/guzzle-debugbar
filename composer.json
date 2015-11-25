@@ -1,34 +1,39 @@
 {
-  "name": "hannesvdvreken/guzzle-debugbar",
-  "description": "A Guzzle plugin that listens to events and logs them to debugbar's timeline",
-  "keywords": ["Guzzle", "http", "logging", "debugbar"],
-  "type": "library",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Hannes Van De Vreken",
-      "email": "vandevreken.hannes@gmail.com"
+    "name": "hannesvdvreken/guzzle-debugbar",
+    "description": "A Guzzle middleware that logs requests to debugbar's timeline",
+    "keywords": [
+        "Debugbar", "http", "log", "Guzzle", "middleware", "profiling", "profiler", "PHP"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hannes Van De Vreken",
+            "email": "vandevreken.hannes@gmail.com"
+        },
+        {
+            "name": "Barry vd. Heuvel",
+            "email": "barryvdh@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "hannesvdvreken/guzzle-profiler": "^1.0",
+        "maximebf/debugbar": "^1.0"
     },
-    {
-      "name": "Barry vd. Heuvel",
-      "email": "barryvdh@gmail.com"
+    "require-dev": {
+        "illuminate/support": "~4|~5",
+        "fabpot/php-cs-fixer": "^1.10",
+        "phpunit/phpunit": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "GuzzleHttp\\Profiling\\Debugbar\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GuzzleHttp\\Profiling\\Debugbar\\Unit\\": "tests/unit/"
+        }
     }
-  ],
-  "require": {
-    "guzzlehttp/guzzle": "~4|~5",
-    "guzzlehttp/log-subscriber": "~1.0",
-    "maximebf/debugbar": "~1"
-  },
-  "require-dev": {
-    "illuminate/support": "~4|~5"
-  },
-  "autoload": {
-    "psr-4": {
-      "GuzzleHttp\\Subscriber\\Log\\": "src/"
-    }
-  },
-  "scripts": {
-    "test": "echo 'No tests yet. Help me by writing some!';"
-  },
-  "minimum-stability": "dev"
 }

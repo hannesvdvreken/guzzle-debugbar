@@ -1,0 +1,19 @@
+language: php
+
+matrix:
+  include:
+    - php: 5.5
+    - php: 5.6
+      env: COLLECT_COVERAGE=true
+    - php: 7.0
+    - php: hhvm
+
+install:
+  - travis_retry composer self-update
+  - travis_retry composer install --no-interaction --prefer-source
+
+script:
+  - vendor/bin/phpunit
+
+after_script:
+  - if [[ "$COLLECT_COVERAGE" == "true" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover build/logs/coverage.xml; fi
