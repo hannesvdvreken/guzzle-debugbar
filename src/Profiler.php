@@ -63,6 +63,7 @@ class Profiler implements ProfilerContract
     protected function getParameters(RequestInterface $request, ResponseInterface $response = null)
     {
         $params = [];
+        $result = '';
 
         $keys = array_intersect($this->context, $this->availableParameters);
 
