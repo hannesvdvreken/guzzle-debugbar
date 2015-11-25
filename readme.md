@@ -1,5 +1,12 @@
 # [Guzzle](http://docs.guzzlephp.org/en/latest/) middleware to log requests to [PHP DebugBar](https://github.com/maximebf/php-debugbar)'s timeline
 
+[![Build Status](http://img.shields.io/travis/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](https://travis-ci.org/hannesvdvreken/guzzle-debugbar)
+[![Latest Stable Version](http://img.shields.io/packagist/v/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](https://packagist.org/packages/hannesvdvreken/guzzle-debugbar)
+[![Code Quality](https://img.shields.io/scrutinizer/g/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](https://scrutinizer-ci.com/g/hannesvdvreken/guzzle-debugbar/)
+[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](https://scrutinizer-ci.com/g/hannesvdvreken/guzzle-debugbar/)
+[![Total Downloads](http://img.shields.io/packagist/dt/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](https://packagist.org/packages/hannesvdvreken/guzzle-debugbar)
+[![License](http://img.shields.io/packagist/l/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](#license)
+
 Guzzle middleware to log requests to DebugBar's timeline.
 
 ![Debugbar timeline](https://www.dropbox.com/s/cabwqycckbu681b/debugbar-timeline.png?dl=1 "Debugbar timeline")
