@@ -86,7 +86,7 @@ class ExceptionMiddlewareTest extends PHPUnit_Framework_TestCase
     function testFulfilledCallback() {
         // Arrange
         $collector = $this->getMockBuilder(ExceptionsCollector::class)->getMock();
-        $exception = $this->getMock(TransferException::class);
+        $exception = new TransferException();
         $response = $this->getMock(ResponseInterface::class);
         $middleware = new Middleware($collector);
 
