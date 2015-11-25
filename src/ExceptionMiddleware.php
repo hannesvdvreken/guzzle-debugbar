@@ -26,7 +26,7 @@ class ExceptionMiddleware
     /**
      * @param callable $handler
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return callable
      */
     public function __invoke(callable $handler)
     {
