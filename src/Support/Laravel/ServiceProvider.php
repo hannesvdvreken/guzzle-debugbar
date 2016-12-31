@@ -44,7 +44,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->alias(ClientInterface::class, Client::class);
 
         // Bind if needed.
-        $this->app->bindIf(HandlerStack::class, function () {
+        $this->app->bind(HandlerStack::class, function () {
             return HandlerStack::create();
         });
 
