@@ -44,7 +44,7 @@ $debugBar = new StandardDebugBar();
 $logger = $debugBar->getCollector('messages');
 
 // Create a new Log middleware.
-$stack->push(GuzzleHttp\Middleware::log($logger));
+$stack->push(GuzzleHttp\Middleware::log($logger, new GuzzleHttp\MessageFormatter()));
 
 // New up the client with this handler stack.
 $client = new GuzzleHttp\Client(['handler' => $stack]);
