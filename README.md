@@ -9,8 +9,8 @@
 
 Guzzle middleware to log requests to DebugBar's timeline.
 
-![Debugbar timeline](https://www.dropbox.com/s/cabwqycckbu681b/debugbar-timeline.png?dl=1 "Debugbar timeline")
-![Debugbar logs](https://www.dropbox.com/s/7rez2q1mbrl76yq/debugbar-logs.png?dl=1 "Debugbar logs")
+![Debugbar timeline](https://www.dropbox.com/s/zjx0mtgauhm9dx5/debugbar-timeline.png?dl=1 "Debugbar timeline")
+![Debugbar logs](https://www.dropbox.com/s/7plrqf6mlyz3e4v/debugbar-logs.png?dl=1 "Debugbar logs")
 
 ## Usage
 
