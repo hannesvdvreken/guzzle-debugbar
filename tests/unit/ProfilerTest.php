@@ -61,7 +61,7 @@ class ProfilerTest extends PHPUnit_Framework_TestCase
             'resource' => 'http://httpbin.org/status/418',
             'request_version' => '1.1',
             'response_version' => '1.1',
-            'hostname' => gethostname(),
+            'hostname' => php_uname('n'),
         ];
 
         // Set expectations
