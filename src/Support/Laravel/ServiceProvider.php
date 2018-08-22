@@ -53,24 +53,30 @@ class ServiceProvider extends BaseServiceProvider
             /** @var \DebugBar\DebugBar $debugBar */
             $debugBar = $this->app->make('debugbar');
 
-            $stack->push(new Middleware(new Profiler($timeline = $debugBar->getCollector('time'))));
-            $stack->unshift(new ExceptionMiddleware($debugBar->getCollector('exceptions')));
+            if (
+              $debugBar->hasCollector('exceptions') &&
+              $debugBar->hasCollector('messages') &&
+              $debugBar->hasCollector('time')
+            ) {
+              $stack->push(new Middleware(new Profiler($timeline = $debugBar->getCollector('time'))));
+              $stack->unshift(new ExceptionMiddleware($debugBar->getCollector('exceptions')));
 
-            /** @var \GuzzleHttp\MessageFormatter $formatter */
-            $formatter = $this->app->make(MessageFormatter::class);
-            $stack->unshift(GuzzleMiddleware::log($debugBar->getCollector('messages'), $formatter));
+              /** @var \GuzzleHttp\MessageFormatter $formatter */
+              $formatter = $this->app->make(MessageFormatter::class);
+              $stack->unshift(GuzzleMiddleware::log($debugBar->getCollector('messages'), $formatter));
 
-            // Also log to the default PSR logger.
-            if ($this->app->bound(LoggerInterface::class)) {
-                $logger = $this->app->make(LoggerInterface::class);
+              // Also log to the default PSR logger.
+              if ($this->app->bound(LoggerInterface::class)) {
+                  $logger = $this->app->make(LoggerInterface::class);
 
-                // Don't log to the same logger twice.
-                if ($logger === $debugBar->getCollector('messages')) {
-                    return;
-                }
+                  // Don't log to the same logger twice.
+                  if ($logger === $debugBar->getCollector('messages')) {
+                      return;
+                  }
 
-                // Push the middleware on the stack.
-                $stack->unshift(GuzzleMiddleware::log($logger, $formatter));
+                  // Push the middleware on the stack.
+                  $stack->unshift(GuzzleMiddleware::log($logger, $formatter));
+              }
             }
         });
     }
