@@ -51,7 +51,7 @@ class ServiceProvider extends BaseServiceProvider
         // If resolved, by this SP or another, add some layers.
         $this->app->resolving(HandlerStack::class, function (HandlerStack $stack) {
             // We cannot log with debugbar from the CLI
-            if (\App::runningInConsole()) {
+            if ($this->app->runningInConsole()) {
                 return;
             }
             
