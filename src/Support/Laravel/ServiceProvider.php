@@ -53,14 +53,15 @@ class ServiceProvider extends BaseServiceProvider
             /** @var \DebugBar\DebugBar $debugBar */
             $debugBar = $this->app->make('debugbar');
 
-            if (
-              $debugBar->hasCollector('exceptions') &&
-              $debugBar->hasCollector('messages') &&
-              $debugBar->hasCollector('time')
-            ) {
+            if ($debugBar->hasCollector('time')) {
               $stack->push(new Middleware(new Profiler($timeline = $debugBar->getCollector('time'))));
-              $stack->unshift(new ExceptionMiddleware($debugBar->getCollector('exceptions')));
+            }
 
+            if ($debugBar->hasCollector('exceptions')) {
+              $stack->unshift(new ExceptionMiddleware($debugBar->getCollector('exceptions')));
+            }
+
+            if ($debugBar->hasCollector('messages')) {
               /** @var \GuzzleHttp\MessageFormatter $formatter */
               $formatter = $this->app->make(MessageFormatter::class);
               $stack->unshift(GuzzleMiddleware::log($debugBar->getCollector('messages'), $formatter));
