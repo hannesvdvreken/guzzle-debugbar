@@ -12,11 +12,11 @@ jobs:
 
 install:
   - travis_retry composer self-update
-  - travis_retry composer install --no-interaction --prefer-source
+  - travis_retry composer install --no-interaction
   - travis_retry composer update $VERSIONS
 
 script:
   - vendor/bin/phpunit
 
-after_script:
+after_success:
   - if [[ "$COLLECT_COVERAGE" == "true" ]]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover build/logs/coverage.xml; fi
