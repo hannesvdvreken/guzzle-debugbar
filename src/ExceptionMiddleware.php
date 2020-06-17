@@ -3,8 +3,8 @@
 namespace GuzzleHttp\Profiling\Debugbar;
 
 use DebugBar\DataCollector\ExceptionsCollector;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Promise\PromiseInterface;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -36,7 +36,7 @@ class ExceptionMiddleware
             return $handler($request, $options)
                 ->then(function(ResponseInterface $response) {
                     return $response;
-                }, function(GuzzleException $exception) {
+                }, function(ClientExceptionInterface $exception) {
                     $this->collector->addException($exception);
 
                     throw $exception;
