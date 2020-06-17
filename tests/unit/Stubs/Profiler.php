@@ -1,4 +1,5 @@
 <?php
+
 namespace GuzzleHttp\Profiling\Debugbar\Unit\Stubs;
 
 use GuzzleHttp\Profiling\Debugbar\Profiler as BaseProfiler;

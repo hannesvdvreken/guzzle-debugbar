@@ -1,8 +1,10 @@
 <?php
+
 namespace GuzzleHttp\Profiling\Debugbar;
 
 use DebugBar\DataCollector\ExceptionsCollector;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -28,13 +30,13 @@ class ExceptionMiddleware
      *
      * @return callable
      */
-    public function __invoke(callable $handler)
+    public function __invoke(callable $handler): callable
     {
-        return function (RequestInterface $request, array $options) use ($handler) {
+        return function(RequestInterface $request, array $options) use ($handler): PromiseInterface {
             return $handler($request, $options)
-                ->then(function (ResponseInterface $response) {
+                ->then(function(ResponseInterface $response) {
                     return $response;
-                }, function (GuzzleException $exception) {
+                }, function(GuzzleException $exception) {
                     $this->collector->addException($exception);
 
                     throw $exception;

@@ -17,14 +17,14 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
-        "hannesvdvreken/guzzle-profiler": "^1.0",
-        "maximebf/debugbar": "^1.0"
+        "php": ">=7.2",
+        "hannesvdvreken/guzzle-profiler": "^2",
+        "maximebf/debugbar": "^1"
     },
     "require-dev": {
-        "illuminate/support": "~4|~5",
-        "fabpot/php-cs-fixer": "^1.10",
-        "phpunit/phpunit": "^4.0"
+        "illuminate/support": ">=6",
+        "phpunit/phpunit": "^8.2.3",
+        "friendsofphp/php-cs-fixer": "^2.2.20"
     },
     "autoload": {
         "psr-4": {
@@ -35,5 +35,9 @@
         "psr-4": {
             "GuzzleHttp\\Profiling\\Debugbar\\Unit\\": "tests/unit/"
         }
-    }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "RC"
 }

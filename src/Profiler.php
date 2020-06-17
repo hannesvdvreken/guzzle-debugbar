@@ -1,4 +1,5 @@
 <?php
+
 namespace GuzzleHttp\Profiling\Debugbar;
 
 use DebugBar\DataCollector\TimeDataCollector;
@@ -44,7 +45,7 @@ class Profiler implements ProfilerContract
      * @param \Psr\Http\Message\RequestInterface $request
      * @param \Psr\Http\Message\ResponseInterface $response
      */
-    public function add($start, $end, RequestInterface $request, ResponseInterface $response = null)
+    public function add(float $start, float $end, RequestInterface $request, ResponseInterface $response = null): void
     {
         $description = $this->describe($request, $response);
         $params = $this->getParameters($request, $response);
@@ -60,7 +61,7 @@ class Profiler implements ProfilerContract
      *
      * @return array
      */
-    protected function getParameters(RequestInterface $request, ResponseInterface $response = null)
+    protected function getParameters(RequestInterface $request, ResponseInterface $response = null): array
     {
         $params = [];
         $result = '';

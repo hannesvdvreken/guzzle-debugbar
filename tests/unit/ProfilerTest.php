@@ -1,4 +1,5 @@
 <?php
+
 namespace GuzzleHttp\Profiling\Debugbar\Unit;
 
 use DebugBar\DataCollector\TimeDataCollector;
@@ -6,9 +7,9 @@ use GuzzleHttp\Profiling\Debugbar\Profiler;
 use GuzzleHttp\Profiling\Debugbar\Unit\Stubs\Profiler as ProfilerStub;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ProfilerTest extends PHPUnit_Framework_TestCase
+class ProfilerTest extends TestCase
 {
     public function testTimelineIsCalled()
     {

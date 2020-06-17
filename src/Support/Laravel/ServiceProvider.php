@@ -1,4 +1,5 @@
 <?php
+
 namespace GuzzleHttp\Profiling\Debugbar\Support\Laravel;
 
 use GuzzleHttp\Client;
@@ -9,19 +10,16 @@ use GuzzleHttp\Middleware as GuzzleMiddleware;
 use GuzzleHttp\Profiling\Debugbar\ExceptionMiddleware;
 use GuzzleHttp\Profiling\Debugbar\Profiler;
 use GuzzleHttp\Profiling\Middleware;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Psr\Http\Client\ClientInterface as PsrClientInterface;
 
-class ServiceProvider extends BaseServiceProvider
+class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
 {
-    /**
-     * @var bool
-     */
-    protected $defer = true;
-
     /**
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return [
             Client::class,
@@ -33,28 +31,29 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Register method.
      */
-    public function register()
+    public function register(): void
     {
         // Configuring all guzzle clients.
-        $this->app->bind(ClientInterface::class, function () {
+        $this->app->bind(ClientInterface::class, function(): PsrClientInterface {
             // Guzzle client
             return new Client(['handler' => $this->app->make(HandlerStack::class)]);
         });
 
         $this->app->alias(ClientInterface::class, Client::class);
+        $this->app->alias(PsrClientInterface::class, ClientInterface::class);
 
         // Bind if needed.
-        $this->app->bind(HandlerStack::class, function () {
+        $this->app->bind(HandlerStack::class, function(): HandlerStack {
             return HandlerStack::create();
         });
 
         // If resolved, by this SP or another, add some layers.
-        $this->app->resolving(HandlerStack::class, function (HandlerStack $stack) {
+        $this->app->resolving(HandlerStack::class, function(HandlerStack $stack): void {
             // We cannot log with debugbar from the CLI
             if ($this->app->runningInConsole()) {
                 return;
             }
-            
+
             /** @var \DebugBar\DebugBar $debugBar */
             $debugBar = $this->app->make('debugbar');
 

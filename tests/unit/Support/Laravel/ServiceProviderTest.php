@@ -1,18 +1,20 @@
 <?php
+
 namespace GuzzleHttp\Profiling\Debugbar\Unit\Support\Laravel;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Profiling\Debugbar\Support\Laravel\ServiceProvider;
-use PHPUnit_Framework_TestCase;
+use Illuminate\Contracts\Container\Container;
+use PHPUnit\Framework\TestCase;
 
-class ServiceProviderTest extends PHPUnit_Framework_TestCase
+class ServiceProviderTest extends TestCase
 {
     public function testAttributes()
     {
         // Arrange
-        $app = $this->getMock(Container::class);
+        $app = $this->createMock(Container::class);
         $serviceProvider = new ServiceProvider($app);
 
         // Act

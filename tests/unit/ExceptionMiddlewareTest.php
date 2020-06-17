@@ -1,4 +1,5 @@
 <?php
+
 namespace GuzzleHttp\Profiling\Debugbar\Unit;
 
 use DebugBar\DataCollector\ExceptionsCollector;
@@ -7,16 +8,16 @@ use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Profiling\Debugbar\ExceptionMiddleware as Middleware;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Request;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class ExceptionMiddlewareTest extends PHPUnit_Framework_TestCase
+class ExceptionMiddlewareTest extends TestCase
 {
     public function testMiddlewareReturnsCallable()
     {
         // Arrange
-        $collector = $this->getMock(ExceptionsCollector::class);
+        $collector = $this->createMock(ExceptionsCollector::class);
         $middleware = new Middleware($collector);
 
         $called = false;
@@ -31,14 +32,14 @@ class ExceptionMiddlewareTest extends PHPUnit_Framework_TestCase
         $function = $middleware($handler);
 
         // Assert
-        $this->assertInternalType('callable', $function);
+        $this->assertTrue(is_callable($function));
         $this->assertFalse($called);
     }
 
     public function testNextMiddlewareIsCalled()
     {
         // Arrange
-        $collector = $this->getMock(ExceptionsCollector::class);
+        $collector = $this->createMock(ExceptionsCollector::class);
         $middleware = new Middleware($collector);
         $options = [
             'random' => 'data',
@@ -49,10 +50,10 @@ class ExceptionMiddlewareTest extends PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('then')
             ->with(
-                $this->callback(function ($callback) {
+                $this->callback(function($callback) {
                     return true;
                 }),
-                $this->callback(function ($callback) {
+                $this->callback(function($callback) {
                     return true;
                 })
             )->willReturn($promise);
@@ -83,11 +84,12 @@ class ExceptionMiddlewareTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($promise, $returnedPromise);
     }
 
-    function testFulfilledCallback() {
+    public function testFulfilledCallback()
+    {
         // Arrange
         $collector = $this->getMockBuilder(ExceptionsCollector::class)->getMock();
         $exception = new TransferException();
-        $response = $this->getMock(ResponseInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
         $middleware = new Middleware($collector);
 
         $collector
@@ -100,7 +102,7 @@ class ExceptionMiddlewareTest extends PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('then')
             ->with(
-                $this->callback(function ($callback) use ($response) {
+                $this->callback(function($callback) use ($response) {
                     // Act
                     $returnedResponse = $callback($response);
 
@@ -109,7 +111,7 @@ class ExceptionMiddlewareTest extends PHPUnit_Framework_TestCase
 
                     return true;
                 }),
-                $this->callback(function ($callback) use ($exception) {
+                $this->callback(function($callback) use ($exception) {
                     // Act
                     try {
                         $callback($exception);
@@ -118,7 +120,6 @@ class ExceptionMiddlewareTest extends PHPUnit_Framework_TestCase
                     }
 
                     // Assert
-
 
                     return true;
                 })
