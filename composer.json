@@ -36,6 +36,16 @@
             "GuzzleHttp\\Profiling\\Debugbar\\Unit\\": "tests/unit/"
         }
     },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/hannesvdvreken"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/barryvdh"
+        }
+    ],
     "config": {
         "sort-packages": true
     },
