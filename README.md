@@ -1,6 +1,6 @@
 # [Guzzle](http://docs.guzzlephp.org/en/latest/) middleware to log requests to [PHP DebugBar](https://github.com/maximebf/php-debugbar)'s timeline
 
-[![Build Status](https://img.shields.io/travis/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](https://travis-ci.org/hannesvdvreken/guzzle-debugbar)
+[![Build Status](https://img.shields.io/travis/hannesvdvreken/guzzle-debugbar/3.x?style=flat-square)](https://travis-ci.org/hannesvdvreken/guzzle-debugbar)
 [![Latest Stable Version](https://img.shields.io/packagist/v/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](https://packagist.org/packages/hannesvdvreken/guzzle-debugbar)
 [![Code Quality](https://img.shields.io/scrutinizer/g/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](https://scrutinizer-ci.com/g/hannesvdvreken/guzzle-debugbar/)
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/hannesvdvreken/guzzle-debugbar.svg?style=flat-square)](https://scrutinizer-ci.com/g/hannesvdvreken/guzzle-debugbar/)
