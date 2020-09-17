@@ -24,6 +24,7 @@ class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
         return [
             Client::class,
             ClientInterface::class,
+            PsrClientInterface::class,
             HandlerStack::class,
         ];
     }
@@ -34,12 +35,12 @@ class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
     public function register(): void
     {
         // Configuring all guzzle clients.
-        $this->app->bind(ClientInterface::class, function(): PsrClientInterface {
+        $this->app->bind(PsrClientInterface::class, function(): PsrClientInterface {
             // Guzzle client
             return new Client(['handler' => $this->app->make(HandlerStack::class)]);
         });
 
-        $this->app->alias(ClientInterface::class, Client::class);
+        $this->app->alias(PsrClientInterface::class, Client::class);
         $this->app->alias(PsrClientInterface::class, ClientInterface::class);
 
         // Bind if needed.
