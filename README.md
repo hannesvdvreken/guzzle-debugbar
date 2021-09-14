@@ -9,8 +9,14 @@
 
 Guzzle middleware to log requests to DebugBar's timeline.
 
-![Debugbar timeline](https://www.dropbox.com/s/zjx0mtgauhm9dx5/debugbar-timeline.png?dl=1)
-![Debugbar logs](https://www.dropbox.com/s/7plrqf6mlyz3e4v/debugbar-logs.png?dl=1)
+![Debugbar timeline](images/debugbar-timeline.png)
+![Debugbar logs](images/debugbar-logs.png)
+
+## Installation
+
+```
+composer require hannesvdvreken/guzzle-debugbar --dev
+```
 
 ## Usage
 
@@ -18,19 +24,21 @@ Just six lines of code are needed to log your requests to DebugBar's timeline.
 
 ```php
 $debugBar = new StandardDebugBar();
+// or when using Laravel:
+$debugBar = app('debugbar');
 
 // Get data collector.
 $timeline = $debugBar->getCollector('time');
 
 // Wrap the timeline.
-$profiler = new GuzzleHttp\Profiling\Debugbar\Profiler($timeline);
+$profiler = new \GuzzleHttp\Profiling\Debugbar\Profiler($timeline);
 
 // Add the middleware to the stack
-$stack = GuzzleHttp\HandlerStack::create();
-$stack->unshift(new GuzzleHttp\Profiling\Middleware($profiler));
+$stack = \GuzzleHttp\HandlerStack::create();
+$stack->unshift(new \GuzzleHttp\Profiling\Middleware($profiler));
 
 // New up the client with this handler stack.
-$client = new GuzzleHttp\Client(['handler' => $stack]);
+$client = new \GuzzleHttp\Client(['handler' => $stack]);
 ```
 
 Now `$client` is ready to make requests. Every request is now logged to the timeline.
@@ -39,15 +47,17 @@ Now `$client` is ready to make requests. Every request is now logged to the time
 
 ```php
 $debugBar = new StandardDebugBar();
+// or when using Laravel:
+$debugBar = app('debugbar');
 
 // PSR-3 logger:
 $logger = $debugBar->getCollector('messages');
 
 // Create a new Log middleware.
-$stack->push(GuzzleHttp\Middleware::log($logger, new GuzzleHttp\MessageFormatter()));
+$stack->push(\GuzzleHttp\Middleware::log($logger, new \GuzzleHttp\MessageFormatter()));
 
 // New up the client with this handler stack.
-$client = new GuzzleHttp\Client(['handler' => $stack]);
+$client = new \GuzzleHttp\Client(['handler' => $stack]);
 ```
 
 ## Support
