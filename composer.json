@@ -19,7 +19,7 @@
     "require": {
         "php": ">=7.2",
         "hannesvdvreken/guzzle-profiler": "^2",
-        "php-debugbar/php-debugbar": "^1"
+        "php-debugbar/php-debugbar": "^2"
     },
     "require-dev": {
         "illuminate/support": ">=6",
