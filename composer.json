@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=8.2",
         "hannesvdvreken/guzzle-profiler": "^2",
         "php-debugbar/php-debugbar": "^2|^3"
     },
