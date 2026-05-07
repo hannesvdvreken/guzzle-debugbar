@@ -11,7 +11,7 @@ jobs:
       env: COLLECT_COVERAGE=true
 
 install:
-  - travis_retry composer self-update
+  - travis_retry composer self-update --2
   - travis_retry composer install --no-interaction
   - travis_retry composer update $VERSIONS
 
