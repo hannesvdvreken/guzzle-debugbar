@@ -13,6 +13,7 @@ use GuzzleHttp\Profiling\Middleware;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Psr\Http\Client\ClientInterface as PsrClientInterface;
+use Psr\Log\LoggerInterface;
 
 class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
 {
@@ -58,7 +59,7 @@ class ServiceProvider extends BaseServiceProvider implements DeferrableProvider
             /** @var \DebugBar\DebugBar $debugBar */
             $debugBar = $this->app->make('debugbar');
 
-            $stack->push(new Middleware(new Profiler($timeline = $debugBar->getCollector('time'))));
+            $stack->push(new Middleware(new Profiler($debugBar->getCollector('time'))));
             $stack->unshift(new ExceptionMiddleware($debugBar->getCollector('exceptions')));
 
             /** @var \GuzzleHttp\MessageFormatter $formatter */
